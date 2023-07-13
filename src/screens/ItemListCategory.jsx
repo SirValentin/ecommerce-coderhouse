@@ -4,8 +4,9 @@ import productsRaw from "../data/products.json";
 import Search from "../components/Search";
 import ProductItem from "../components/ProductItem";
 
-const ItemListCategory = ({ category, setCategory }) => {
-  const [categorySelected, setCategorySelected] = useState(category);
+const ItemListCategory = ({ navigation, route }) => {
+  const { category } = route.params;
+
   const [products, setProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [keywordError, setKeywordError] = useState("");
@@ -13,11 +14,11 @@ const ItemListCategory = ({ category, setCategory }) => {
   useEffect(() => {
     const productsFiltered = productsRaw.filter(
       (product) =>
-        product.category === categorySelected &&
+        product.category === category &&
         product.title.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
     );
     setProducts(productsFiltered);
-  }, [categorySelected, keyword]);
+  }, [category, keyword]);
 
   const onSearch = (input) => {
     const expression = /^[a-zA-Z0-9]*$/;
@@ -34,12 +35,16 @@ const ItemListCategory = ({ category, setCategory }) => {
       <Search
         onSearch={onSearch}
         error={keywordError}
-        goBack={() => setCategory("")}
+        goBack={() => navigation.goBack()}
       />
       <FlatList
         data={products}
         keyExtractor={(product) => product.id}
-        renderItem={({ item }) => ProductItem({ item })}
+        renderItem={({ item }) => (
+          <ProductItem item={item} navigation={navigation} />
+        )}
+        numColumns={2}
+        horizontal={false}
       />
     </View>
   );
