@@ -10,10 +10,11 @@ export default Card;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: 200,
-    paddingVertical: 10,
+    // width: 200,
+    width: "100%",
+    padding: 10,
     marginBottom: 10,
-    backgroundColor: colors.navy,
+    backgroundColor: colors.lightBlue,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 4,

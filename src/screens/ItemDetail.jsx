@@ -7,11 +7,12 @@ import {
   useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import allProducts from "../data/products.json";
+import { useSelector } from "react-redux";
 
-const ItemDetail = ({ navigation, route }) => {
-  const { productId } = route.params;
-  const [product, setProduct] = useState(null);
+const ItemDetail = ({ navigation }) => {
+  const productDetail = useSelector(
+    (state) => state.shopReducer.value.productDetail
+  );
   const [orientation, setOrientation] = useState("portrait");
   const { width, height } = useWindowDimensions();
 
@@ -23,17 +24,10 @@ const ItemDetail = ({ navigation, route }) => {
     }
   }, [width, height]);
 
-  useEffect(() => {
-    const productSelected = allProducts.find(
-      (product) => product.id === productId
-    );
-    setProduct(productSelected);
-  }, [productId]);
-
   return (
     <View>
       <Button onPress={() => navigation.goBack()} title="Go Back" />
-      {product && (
+      {productDetail && (
         <View
           style={
             orientation === "portrait"
@@ -42,14 +36,14 @@ const ItemDetail = ({ navigation, route }) => {
           }
         >
           <Image
-            source={{ uri: product.images[0] }}
+            source={{ uri: productDetail.images[0] }}
             resizeMode="contain"
             style={styles.image}
           />
           <View>
-            <Text>{product.title}</Text>
-            <Text>{product.description}</Text>
-            <Text>{product.price}</Text>
+            <Text>{productDetail.title}</Text>
+            <Text>{productDetail.description}</Text>
+            <Text>${productDetail.price}</Text>
           </View>
         </View>
       )}
