@@ -4,22 +4,33 @@ import productsRaw from "../data/products.json";
 import Search from "../components/Search";
 import ProductItem from "../components/ProductItem";
 import { useSelector } from "react-redux";
+import { useGetProductsByCategoryQuery } from "../services/shopServices";
 
 const ItemListCategory = ({ navigation, route }) => {
   const productSelected = useSelector(
     (state) => state.shopReducer.value.productsSelected
   );
+  const category = useSelector(
+    (state) => state.shopReducer.value.categorySelected
+  );
+  const {
+    data: productsFilteredByCategory,
+    isError,
+    isLoading,
+  } = useGetProductsByCategoryQuery(category);
 
   const [products, setProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [keywordError, setKeywordError] = useState("");
 
   useEffect(() => {
-    const productsFiltered = productSelected.filter((product) =>
-      product.title.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
-    );
-    setProducts(productsFiltered);
-  }, [keyword]);
+    if (productsFilteredByCategory) {
+      const productsFiltered = productsFilteredByCategory.filter((product) =>
+        product.title.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
+      );
+      setProducts(productsFiltered);
+    }
+  }, [keyword, productsFilteredByCategory]);
 
   const onSearch = (input) => {
     const expression = /^[a-zA-Z0-9]*$/;

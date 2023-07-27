@@ -1,24 +1,23 @@
 import { FlatList, StyleSheet, Text, View, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-import cartData from "../data/cart.json";
+// import cartData from "../data/cart.json";
 import CartItem from "../components/CartItem";
 import { colors } from "../global/Colors";
+import { useSelector } from "react-redux";
+import { usePostCartMutation } from "../services/shopServices";
 
 const Cart = () => {
-  const [total, setTotal] = useState(0);
-  useEffect(() => {
-    const total = cartData.reduce(
-      (acc, item) => (acc += item.price * item.quantity),
-      0
-    );
-    setTotal(total);
-  }, [cartData]);
-
+  const cartItems = useSelector((state) => state.cartReducer.value.items);
+  const total = useSelector((state) => state.cartReducer.value.total);
+  const [triggerPost, result] = usePostCartMutation();
+  const onConfirm = () => {
+    triggerPost({ total, cartItems, user: "loggedUser" });
+  };
   return (
     <View style={styles.container}>
       <FlatList
         style={styles.list}
-        data={cartData}
+        data={cartItems}
         keyExtractor={(cartItem) => cartItem.id}
         renderItem={({ item }) => {
           return <CartItem cartItem={item} />;
@@ -26,7 +25,9 @@ const Cart = () => {
       />
       <View style={styles.totalContainer}>
         <Pressable>
-          <Text style={styles.text}>Confirm</Text>
+          <Text style={styles.text} onPress={onConfirm}>
+            Confirm
+          </Text>
         </Pressable>
         <Text style={styles.text}>Total: ${total}</Text>
       </View>
