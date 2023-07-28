@@ -8,20 +8,20 @@ export const shopSlice = createSlice({
       categorySelected: "",
       productIdSelected: "",
       allProducts: productsData,
-      productsSelected: [],
+      productsByCategory: [],
       productDetail: null,
     },
   },
   reducers: {
     setCategorySelected: (state, action) => {
-      state.value.productsSelected = state.value.allProducts.filter(
+      state.value.productsByCategory = state.value.allProducts.filter(
         (product) => product.category === action.payload
       );
       state.value.categorySelected = action.payload;
     },
     setProductIdSelected: (state, action) => {
       state.value.productIdSelected = action.payload;
-      state.value.productDetail = state.value.productsSelected.find(
+      state.value.productDetail = state.value.productsByCategory.find(
         (product) => product.id === state.value.productIdSelected
       );
     },

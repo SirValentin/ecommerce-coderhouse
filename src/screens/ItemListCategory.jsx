@@ -6,8 +6,8 @@ import ProductItem from "../components/ProductItem";
 import { useSelector } from "react-redux";
 
 const ItemListCategory = ({ navigation, route }) => {
-  const productSelected = useSelector(
-    (state) => state.shopReducer.value.productsSelected
+  const productsByCategory = useSelector(
+    (state) => state.shopReducer.value.productsByCategory
   );
 
   const [products, setProducts] = useState([]);
@@ -15,7 +15,7 @@ const ItemListCategory = ({ navigation, route }) => {
   const [keywordError, setKeywordError] = useState("");
 
   useEffect(() => {
-    const productsFiltered = productSelected.filter((product) =>
+    const productsFiltered = productsByCategory.filter((product) =>
       product.title.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
     );
     setProducts(productsFiltered);
