@@ -12,10 +12,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CartStack from "./CartStack";
 import ShopStack from "./ShopStack";
 import { colors } from "../global/Colors";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import OrderStack from "./OrderStack";
 import AuthStack from "./AuthStack";
 import { useSelector } from "react-redux";
+import MyProfileStack from "./MyProfileStack";
 
 const Tab = createBottomTabNavigator();
 const Navigator = () => {
@@ -80,6 +81,24 @@ const Navigator = () => {
                         color={focused ? "white" : colors.navy}
                       />
                       <Text style={styles.textTab}>Orders</Text>
+                    </View>
+                  );
+                },
+              }}
+            />
+            <Tab.Screen
+              name="MyProfile"
+              component={MyProfileStack}
+              options={{
+                tabBarIcon: ({ focused }) => {
+                  return (
+                    <View style={styles.containerTab}>
+                      <Ionicons
+                        name="person-circle-outline"
+                        size={24}
+                        color={focused ? "white" : colors.navy}
+                      />
+                      <Text style={styles.textTab}>Profile</Text>
                     </View>
                   );
                 },

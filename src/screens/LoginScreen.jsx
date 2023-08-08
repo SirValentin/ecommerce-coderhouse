@@ -1,20 +1,61 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InputForm from "../components/InputForm";
 import SubmitButton from "../components/SubmitButton";
 import { colors } from "../global/Colors";
+import { isAtLeastSixCharacters, isValidEmail } from "../validations/auth";
+import { useSignInMutation } from "../services/authServices";
+import { setUser } from "../features/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const LoginScreen = ({ navigation }) => {
-  const onSubmit = () => {};
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorPassword, setErrorPassword] = useState("");
+  const [triggerSignIn, resultSignIn] = useSignInMutation();
+  const dispatch = useDispatch();
+
+  const onSubmit = () => {
+    const isValidVariableEmail = isValidEmail(email);
+    const isCorrectPassword = isAtLeastSixCharacters(password);
+    if (isValidVariableEmail && isCorrectPassword) {
+      triggerSignIn({
+        email,
+        password,
+        returnSecureToken: true,
+      });
+    }
+    if (!isValidVariableEmail) setErrorEmail("Email is not correct");
+    else setErrorEmail("");
+    if (!isCorrectPassword)
+      setErrorPassword("Password must be at least 6 characters");
+    else setErrorPassword("");
+  };
+  useEffect(() => {
+    if (resultSignIn.isSuccess) {
+      dispatch(
+        setUser({
+          email: resultSignIn.data.email,
+          idToken: resultSignIn.data.idToken,
+        })
+      );
+    }
+  }, [resultSignIn]);
+
   return (
     <View style={styles.main}>
       <View style={styles.container}>
         <Text style={styles.title}>Login to start</Text>
-        <InputForm label={"email"} onChange={() => {}} error={""} />
+        <InputForm
+          label={"email"}
+          onChange={(email) => setEmail(email)}
+          error={errorEmail}
+        />
         <InputForm
           label={"password"}
-          onChange={() => {}}
-          error={""}
+          onChange={(password) => setPassword(password)}
+          error={errorPassword}
           isSecure={true}
         />
         <SubmitButton onPress={onSubmit} title="Send" />
@@ -41,7 +82,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.lightPink,
+    backgroundColor: colors.lightBlue,
     gap: 15,
     paddingVertical: 20,
     borderRadius: 10,
