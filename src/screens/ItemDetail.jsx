@@ -5,17 +5,23 @@ import {
   Text,
   View,
   useWindowDimensions,
+  Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addCartItem } from "../features/cart/cartSlice";
 
 const ItemDetail = ({ navigation }) => {
+  const dispatch = useDispatch();
   const productDetail = useSelector(
     (state) => state.shopReducer.value.productDetail
   );
   const [orientation, setOrientation] = useState("portrait");
   const { width, height } = useWindowDimensions();
 
+  const onAddCart = () => {
+    dispatch(addCartItem({ ...productDetail, quantity: 1 }));
+  };
   useEffect(() => {
     if (width > height) {
       setOrientation("landscape");
@@ -47,6 +53,9 @@ const ItemDetail = ({ navigation }) => {
           </View>
         </View>
       )}
+      <Pressable onPress={onAddCart}>
+        <Text>Add to cart</Text>
+      </Pressable>
     </View>
   );
 };

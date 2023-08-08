@@ -3,8 +3,10 @@ import React from "react";
 import { colors } from "../global/Colors";
 import categories from "../data/categories";
 import CategoryItem from "../components/CategoryItem";
+import { useGetCategoriesQuery } from "../services/shopServices";
 
 const Home = ({ navigation }) => {
+  const { data: categories, isLoading, isError } = useGetCategoriesQuery();
   return (
     <View style={styles.container}>
       <FlatList
